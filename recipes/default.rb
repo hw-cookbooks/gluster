@@ -31,6 +31,31 @@ end
 package "glusterfs-client"
 package "glusterfs-server"
 
+# ensure instances has ephemeral storage for gluster use
+# format ephemeral storage if needed (to ext4)
+# mkfs.ext4 -m 1 -L gluster /path/to/ephemeral-blockdev
+# add to fstab
+#  echo -e "LABEL=gluster\t/export\text4\tnoatime\t0\t2" >> /etc/fstab
+
+# start the service
 service "glusterfs-server" do
   action [:enable, :start]
 end
+
+# join the pool and start volume?
+# maybe:
+# gluster peer probe $SERVERNAME
+# gluster volume create <volume> replica 2 transport tcp $SERVER1:/export $SERVER2:/export
+# gluster volume start <volume>
+
+#gluster_volume "webs"
+
+# permissions - LWRP
+# gluster volume set <volume> auth.allow '*'
+# gluster volume set <volume> performance.cache-size 256MB
+
+# gluster_volume "name" do
+#   key "auth.allow"
+#   value "*"
+#   action :set
+# end
