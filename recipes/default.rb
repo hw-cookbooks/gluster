@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: glusterfs
+# Cookbook Name:: gluster
 # Recipe:: default
 #
 # Copyright 2013, Heavy Water Ops, LLC
@@ -17,3 +17,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+apt_repository "gluster" do
+  uri "http://ppa.launchpad.net/semiosis/ubuntu-glusterfs-3.4/ubuntu"
+  distribution node['lsb']['codename']
+  components ["main"]
+  key "774BAC4D"
+  keyserver "keyserver.ubuntu.com"
+  action :add
+  notifies :run, "execute[apt-get update]", :immediately
+end
+
+package "glusterfs-client"
+package "glusterfs-server"
+
+service "glusterfs-server" do
+  action [:enable, :start]
+end
